@@ -28,11 +28,6 @@ namespace Mandelbrot
 
     static readonly double STEP = 1.0 / 512.0;
     const int MAX = 128;
-    private void Recursive_Click(object sender, RoutedEventArgs e)
-    {
-      TimeSpan took = TimeTest((z,i) => Utils.MandelbrotR(z,MAX, i));
-      MessageBox.Show(took.TotalMilliseconds.ToString());
-    }
 
     private static TimeSpan TimeTest(Func<Complex, int, int> m)
     {
@@ -66,10 +61,10 @@ namespace Mandelbrot
     }
 
 
-    double FractalWidth = DEFAULT_FRACTAL_WIDTH;
-    double FractalHeight = DEFAULT_FRACTAL_HEIGHT;
-    double FractalLeft= DEFAULT_X_MIN;
-    double FractalTop = DEFAULT_Y_MIN;
+    decimal FractalWidth = (decimal) DEFAULT_FRACTAL_WIDTH;
+    decimal FractalHeight = (decimal) DEFAULT_FRACTAL_HEIGHT;
+    decimal FractalLeft= (decimal)DEFAULT_X_MIN;
+    decimal FractalTop = (decimal)DEFAULT_Y_MIN;
 
     private void DrawFractal()
     {
@@ -85,7 +80,7 @@ namespace Mandelbrot
         for (int x = 0; x < w; x++)
         {
           var real = FractalLeft + dx * x;
-          var escape = Utils.Mandelbrot(new Complex(real, imaginary), Utils.MAX_TRIES);
+          var escape = Utils.MandelbrotM(real, imaginary, Utils.MAX_TRIES);
           var i = (y * w + x) * 4;
           Utils.GetColor(escape, out arr[i + 2], out arr[i + 1], out arr[i + 0]);
           arr[i + 3] = 0xff;
@@ -120,18 +115,24 @@ namespace Mandelbrot
 
     private void TheImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
-      var p = UiToFractal(e.GetPosition(TheImage));
-      FractalHeight /= 2.0;
-      FractalWidth /= 2.0;
-      FractalTop = p.Y - FractalHeight / 2.0;
-      FractalLeft = p.X - FractalWidth / 2.0;
+      var p = e.GetPosition(TheImage);
+      var center = UiToFractalM((decimal)p.X, (decimal)p.Y);
+      FractalWidth /= 2.0m;
+      FractalHeight /= 2.0m;
+      FractalLeft = center.Item1 - FractalWidth / 2.0m;
+      FractalTop = center.Item2 - FractalHeight / 2.0m;
       DrawFractal();
     }
 
     private Point UiToFractal(Point p)
     {
-      return new Point(FractalWidth * p.X / TheImage.ActualWidth + FractalLeft,
-        FractalHeight * p.Y / TheImage.ActualHeight + FractalTop);
+      //return new Point(FractalWidth * p.X / TheImage.ActualWidth + FractalLeft,        FractalHeight * p.Y / TheImage.ActualHeight + FractalTop);
+      return p; // temp while I figure out if I can use decimal all the time.
+    }
+    private Tuple<decimal, decimal> UiToFractalM(decimal x, decimal y)
+    {
+      return new Tuple<decimal, decimal>(FractalWidth * x / (decimal)TheImage.ActualWidth + FractalLeft,
+        FractalHeight * y / (decimal)TheImage.ActualHeight + FractalTop);
     }
 
     private void TheWindowLoaded(object sender, RoutedEventArgs e)
