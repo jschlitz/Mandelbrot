@@ -44,6 +44,7 @@ namespace Mandelbrot
 
     public static int MandelbrotM(decimal real, decimal imaginary, int max)
     {
+      //doh! max is too small.
       decimal zr = 0;
       decimal zi = 0;
       for (int i = 0; i < max; i++)
