@@ -26,6 +26,15 @@ namespace Mandelbrot
 
 
 
+    public static int MandelbrotR(Complex z, int max, int it)
+    {
+      //THis is totally wrong. oops.
+
+      //5.6 seconds @ resolution of 1/512
+      if (z.Magnitude >= 2) return it;
+      if (it > max) return -1;
+      return MandelbrotR(z * z, max, it + 1);
+    }
 
     public static int Mandelbrot(Complex c, int max)
     {
@@ -41,26 +50,6 @@ namespace Mandelbrot
       }
       return 0;
     }
-
-    public static int MandelbrotM(decimal real, decimal imaginary, int max)
-    {
-      //doh! max is too small. test
-      decimal zr = 0;
-      decimal zi = 0;
-      for (int i = 0; i < max; i++)
-      {
-        var zr2 = zr * zr;
-        var zi2 = zi * zi;
-        if (zr2 + zi2  >= 4)
-        {
-          return i;
-        }
-        zi = 2 * zi * zr + imaginary;
-        zr = zr2 - zi2 + real;
-      }
-      return 0;
-    }
-
 
     public static int MAX_TRIES = 100;
     private static readonly byte[] COLORS = new byte[MAX_TRIES * 3 ];
