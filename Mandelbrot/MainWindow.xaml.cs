@@ -70,6 +70,7 @@ namespace Mandelbrot
     double FractalHeight = DEFAULT_FRACTAL_HEIGHT;
     double FractalLeft= DEFAULT_X_MIN;
     double FractalTop = DEFAULT_Y_MIN;
+    int GiveUp = 50;
 
     private void DrawFractal()
     {
@@ -85,7 +86,7 @@ namespace Mandelbrot
         for (int x = 0; x < w; x++)
         {
           var real = FractalLeft + dx * x;
-          var escape = Utils.Mandelbrot(new Complex(real, imaginary), Utils.MAX_TRIES);
+          var escape = Utils.Mandelbrot(new Complex(real, imaginary), GiveUp);
           var i = (y * w + x) * 4;
           Utils.GetColor(escape, out arr[i + 2], out arr[i + 1], out arr[i + 0]);
           arr[i + 3] = 0xff;
@@ -121,6 +122,7 @@ namespace Mandelbrot
     private void TheImage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
       var p = UiToFractal(e.GetPosition(TheImage));
+      GiveUp = Math.Min(Utils.MAX_TRIES, (int)(1.25 * GiveUp)); //wild guess at what increase is reasonable.
       FractalHeight /= 2.0;
       FractalWidth /= 2.0;
       FractalTop = p.Y - FractalHeight / 2.0;

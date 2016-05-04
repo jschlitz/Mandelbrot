@@ -51,7 +51,7 @@ namespace Mandelbrot
       return 0;
     }
 
-    public static int MAX_TRIES = 100;
+    public static int MAX_TRIES = 500;
     private static readonly byte[] COLORS = new byte[MAX_TRIES * 3 ];
     public static void GetColor(int i, out byte r, out byte g, out byte b)
     {
